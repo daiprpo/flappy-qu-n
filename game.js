@@ -52,8 +52,8 @@ class Bird {
     constructor() {
         this.x = 100;           // Vị trí ban đầu ngang
         this.y = 200;           // Vị trí ban đầu dọc
-        this.width = 40;        // Chiều rộng
-        this.height = 40;       // Chiều cao
+        this.width = 30;        // Chiều rộng
+        this.height = 30;       // Chiều cao
         this.velocity = 0;      // Vận tốc
         this.gravity = 0.45;     // Trọng lực
         this.lift = -9;        // Lực nâng khi vỗ cánh
