@@ -17,7 +17,8 @@ let flapSound, hitSound, scoreSound;
 function loadAudio(url) {
     return fetch(url)
         .then(response => response.arrayBuffer())
-        .then(buffer => audioContext.decodeAudioData(buffer));
+        .then(buffer => audioContext.decodeAudioData(buffer))
+        .catch(() => null); // Bỏ qua lỗi âm thanh để không làm chậm game
 }
 
 // Hàm phát âm thanh
@@ -28,19 +29,27 @@ function playSound(buffer) {
     source.start(0);
 }
 
-// Chờ tất cả tài nguyên tải xong trước khi chạy game
-Promise.all([
-    new Promise(resolve => birdImg.onload = resolve),
-    new Promise(resolve => baseImg.onload = resolve),
-    new Promise(resolve => bgImg.onload = resolve),
-    loadAudio('flap.mp3').then(buffer => flapSound = buffer),
-    loadAudio('hit.mp3').then(buffer => hitSound = buffer),
-    loadAudio('score.mp3').then(buffer => scoreSound = buffer)
-]).then(() => {
+// Tải tài nguyên tối thiểu và khởi động game
+const loadEssentials = () => {
+    return Promise.all([
+        new Promise(resolve => birdImg.onload = resolve),
+        new Promise(resolve => bgImg.onload = resolve),
+        new Promise(resolve => baseImg.onload = resolve)
+    ]);
+};
+
+// Tải âm thanh không đồng bộ trong nền
+const loadAudioInBackground = () => {
+    loadAudio('flap.mp3').then(buffer => flapSound = buffer);
+    loadAudio('hit.mp3').then(buffer => hitSound = buffer);
+    loadAudio('score.mp3').then(buffer => scoreSound = buffer);
+};
+
+// Khởi động game ngay khi tài nguyên hình ảnh sẵn sàng
+loadEssentials().then(() => {
     const game = new Game();
     game.start();
-}).catch(error => {
-    console.error('Lỗi khi tải tài nguyên:', error);
+    loadAudioInBackground(); // Tải âm thanh sau khi game bắt đầu
 });
 
 // Lớp Bird (Chim)
