@@ -50,13 +50,13 @@ function loadAudioAssets() {
 // Lớp Bird (Chim)
 class Bird {
     constructor() {
-        this.x = 100;           // Vị trí ban đầu ngang
-        this.y = 200;           // Vị trí ban đầu dọc
-        this.width = 30;        // Chiều rộng
-        this.height = 30;       // Chiều cao
+        this.x = 200;           // Vị trí ban đầu ngang
+        this.y = 400;           // Vị trí ban đầu dọc
+        this.width = 60;        // Chiều rộng
+        this.height = 60;       // Chiều cao
         this.velocity = 0;      // Vận tốc
         this.gravity = 0.45;     // Trọng lực
-        this.lift = -9;        // Lực nâng khi vỗ cánh
+        this.lift = -13;        // Lực nâng khi vỗ cánh
     }
 
     flap() {
@@ -78,11 +78,11 @@ class Bird {
 class Pipe {
     constructor() {
         this.x = canvas.width;                  // Vị trí bắt đầu từ cạnh phải
-        this.width = 50;                        // Chiều rộng ống
-        this.gap = 150;                         // Khoảng cách giữa ống trên và dưới
-        this.topHeight = Math.random() * (canvas.height - this.gap - 100) + 50; // Chiều cao ống trên
+        this.width = 100;                        // Chiều rộng ống
+        this.gap = 300;                         // Khoảng cách giữa ống trên và dưới
+        this.topHeight = Math.random() * (canvas.height - this.gap - 200) + 100; // Chiều cao ống trên
         this.bottomY = this.topHeight + this.gap; // Vị trí ống dưới
-        this.speed = 2;                         // Tốc độ di chuyển
+        this.speed = 4;                         // Tốc độ di chuyển
         this.scored = false;                    // Trạng thái ghi điểm
     }
 
@@ -165,25 +165,25 @@ class Game {
         ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);    // Vẽ nền
         this.pipes.forEach(pipe => pipe.draw());                    // Vẽ ống
         this.bird.draw();                                           // Vẽ chim
-        ctx.drawImage(baseImg, 0, canvas.height - 50, canvas.width, 50); // Vẽ mặt đất
+        ctx.drawImage(baseImg, 0, canvas.height - 1000, canvas.width, 1000); // Vẽ mặt đất
 
         // Hiển thị điểm số
         ctx.fillStyle = 'white';
-        ctx.font = '24px Arial';
-        ctx.fillText(`Score: ${this.score}`, 10, 30);
-        ctx.fillText(`High Score: ${this.highScore}`, 10, 60);
+        ctx.font = '48px Arial';
+        ctx.fillText(`Score: ${this.score}`, 20, 60);
+        ctx.fillText(`High Score: ${this.highScore}`, 20, 120);
 
         // Hiển thị Game Over
         if (this.gameOver) {
             ctx.fillStyle = 'red';
-            ctx.font = '48px Arial';
-            ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2);
+            ctx.font = '96px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 240, canvas.height / 2);
         }
     }
 
     checkCollisions() {
         // Va chạm với mặt đất hoặc trần
-        if (this.bird.y + this.bird.height > canvas.height - 50 || this.bird.y < 0) {
+        if (this.bird.y + this.bird.height > canvas.height - 100 || this.bird.y < 0) {
             this.endGame();
             return;
         }
