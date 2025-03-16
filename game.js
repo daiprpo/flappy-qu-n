@@ -104,7 +104,7 @@ class Game {
         this.pipes = [];                    // Mảng chứa các ống
         this.score = 0;                     // Điểm số hiện tại
         this.gameOver = false;              // Trạng thái trò chơi
-        this.pipeInterval = 2100;           // Khoảng cách thời gian giữa các ống (2 giây)
+        this.pipeInterval = 1800;           // Khoảng cách thời gian giữa các ống (2 giây)
         this.lastPipeTime = Date.now();     // Thời điểm tạo ống cuối cùng
         this.highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0; // Điểm cao nhất
     }
