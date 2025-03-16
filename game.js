@@ -50,13 +50,13 @@ function loadAudioAssets() {
 // Lớp Bird (Chim)
 class Bird {
     constructor() {
-        this.x = 200;           // Vị trí ban đầu ngang
-        this.y = 400;           // Vị trí ban đầu dọc
-        this.width = 60;        // Chiều rộng
-        this.height = 60;       // Chiều cao
+        this.x = 150;           // Vị trí ban đầu ngang
+        this.y = 300;           // Vị trí ban đầu dọc
+        this.width = 50;        // Chiều rộng
+        this.height = 50;       // Chiều cao
         this.velocity = 0;      // Vận tốc
         this.gravity = 0.45;     // Trọng lực
-        this.lift = -13;        // Lực nâng khi vỗ cánh
+        this.lift = -11;        // Lực nâng khi vỗ cánh
     }
 
     flap() {
@@ -78,11 +78,11 @@ class Bird {
 class Pipe {
     constructor() {
         this.x = canvas.width;                  // Vị trí bắt đầu từ cạnh phải
-        this.width = 100;                        // Chiều rộng ống
-        this.gap = 300;                         // Khoảng cách giữa ống trên và dưới
-        this.topHeight = Math.random() * (canvas.height - this.gap - 200) + 100; // Chiều cao ống trên
+        this.width = 75;                        // Chiều rộng ống
+        this.gap = 225;                         // Khoảng cách giữa ống trên và dưới
+        this.topHeight = Math.random() * (canvas.height - this.gap - 150) + 750; // Chiều cao ống trên
         this.bottomY = this.topHeight + this.gap; // Vị trí ống dưới
-        this.speed = 4;                         // Tốc độ di chuyển
+        this.speed = 3;                         // Tốc độ di chuyển
         this.scored = false;                    // Trạng thái ghi điểm
     }
 
@@ -109,7 +109,7 @@ class Game {
         this.score = 0;                     // Điểm số hiện tại
         this.highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0; // Điểm cao nhất
         this.gameOver = false;              // Trạng thái game
-        this.pipeInterval = 1800;           // Khoảng cách giữa các ống (2 giây)
+        this.pipeInterval = 2000;           // Khoảng cách giữa các ống (2 giây)
         this.lastPipeTime = Date.now();     // Thời điểm tạo ống cuối
     }
 
@@ -169,21 +169,21 @@ class Game {
 
         // Hiển thị điểm số
         ctx.fillStyle = 'white';
-        ctx.font = '48px Arial';
-        ctx.fillText(`Score: ${this.score}`, 20, 60);
-        ctx.fillText(`High Score: ${this.highScore}`, 20, 120);
+        ctx.font = '36px Arial';
+        ctx.fillText(`Score: ${this.score}`, 15, 45);
+        ctx.fillText(`High Score: ${this.highScore}`, 15, 90);
 
         // Hiển thị Game Over
         if (this.gameOver) {
             ctx.fillStyle = 'red';
-            ctx.font = '96px Arial';
-            ctx.fillText('Game Over', canvas.width / 2 - 240, canvas.height / 2);
+            ctx.font = '72px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 180, canvas.height / 2);
         }
     }
 
     checkCollisions() {
         // Va chạm với mặt đất hoặc trần
-        if (this.bird.y + this.bird.height > canvas.height - 100 || this.bird.y < 0) {
+        if (this.bird.y + this.bird.height > canvas.height - 75 || this.bird.y < 0) {
             this.endGame();
             return;
         }
