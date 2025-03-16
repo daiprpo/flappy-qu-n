@@ -2,6 +2,30 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Điều chỉnh kích thước canvas dựa trên màn hình thiết bị
+function resizeCanvas() {
+    const aspectRatio = 3 / 4; // Tỷ lệ 3:4 (rộng:cao)
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    if (width / height > aspectRatio) {
+        // Màn hình rộng hơn tỷ lệ, giới hạn bởi chiều cao
+        height = Math.min(height, 720); // Giới hạn tối đa
+        width = height * aspectRatio;
+    } else {
+        // Màn hình cao hơn tỷ lệ, giới hạn bởi chiều rộng
+        width = Math.min(width, 480); // Giới hạn tối đa
+        height = width / aspectRatio;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+}
+
+// Gọi resize khi tải trang và khi thay đổi kích thước
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
 // Khởi tạo hình ảnh
 const birdImg = new Image();
 birdImg.src = 'bird.png';
@@ -19,19 +43,19 @@ function loadAudio(url) {
     return fetch(url)
         .then(response => response.arrayBuffer())
         .then(buffer => audioContext.decodeAudioData(buffer))
-        .catch(() => null); // Bỏ qua lỗi âm thanh
+        .catch(() => null);
 }
 
 // Hàm phát âm thanh
 function playSound(buffer) {
-    if (!buffer) return; // Nếu âm thanh chưa tải, không phát
+    if (!buffer) return;
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
     source.connect(audioContext.destination);
     source.start(0);
 }
 
-// Tải các tài nguyên hình ảnh tối thiểu
+// Tải tài nguyên hình ảnh tối thiểu
 function loadEssentialAssets() {
     return Promise.all([
         new Promise(resolve => birdImg.onload = resolve),
@@ -50,77 +74,79 @@ function loadAudioAssets() {
 // Lớp Bird (Chim)
 class Bird {
     constructor() {
-        this.x = 150;           // Vị trí ban đầu ngang
-        this.y = 300;           // Vị trí ban đầu dọc
-        this.width = 50;        // Chiều rộng
-        this.height = 50;       // Chiều cao
-        this.velocity = 0;      // Vận tốc
-        this.gravity = 0.45;     // Trọng lực
-        this.lift = -11;        // Lực nâng khi vỗ cánh
+        this.scale = canvas.width / 480; // Tỷ lệ dựa trên chiều rộng chuẩn 480
+        this.x = 150 * this.scale;
+        this.y = canvas.height / 2;
+        this.width = 45 * this.scale;
+        this.height = 45 * this.scale;
+        this.velocity = 0;
+        this.gravity = 0.5 * this.scale;
+        this.lift = -12 * this.scale;
     }
 
     flap() {
-        this.velocity = this.lift;  // Đặt vận tốc khi vỗ cánh
-        playSound(flapSound);       // Phát âm thanh vỗ cánh
+        this.velocity = this.lift;
+        playSound(flapSound);
     }
 
     update() {
-        this.velocity += this.gravity;  // Áp dụng trọng lực
-        this.y += this.velocity;        // Cập nhật vị trí
+        this.velocity += this.gravity;
+        this.y += this.velocity;
     }
 
     draw() {
-        ctx.drawImage(birdImg, this.x, this.y, this.width, this.height); // Vẽ chim
+        ctx.drawImage(birdImg, this.x, this.y, this.width, this.height);
     }
 }
 
 // Lớp Pipe (Ống)
 class Pipe {
     constructor() {
-        this.x = canvas.width;                  // Vị trí bắt đầu từ cạnh phải
-        this.width = 75;                        // Chiều rộng ống
-        this.gap = 225;                         // Khoảng cách giữa ống trên và dưới
-        this.topHeight = Math.random() * (canvas.height - this.gap - 150) + 750; // Chiều cao ống trên
-        this.bottomY = this.topHeight + this.gap; // Vị trí ống dưới
-        this.speed = 3;                         // Tốc độ di chuyển
-        this.scored = false;                    // Trạng thái ghi điểm
+        this.scale = canvas.width / 480;
+        this.x = canvas.width;
+        this.width = 75 * this.scale;
+        this.gap = 225 * this.scale;
+        this.topHeight = Math.random() * (canvas.height - this.gap - 150 * this.scale) + 75 * this.scale;
+        this.bottomY = this.topHeight + this.gap;
+        this.speed = 3 * this.scale;
+        this.scored = false;
     }
 
     update() {
-        this.x -= this.speed;   // Di chuyển ống sang trái
+        this.x -= this.speed;
     }
 
     draw() {
         ctx.fillStyle = 'green';
-        ctx.fillRect(this.x, 0, this.width, this.topHeight);              // Vẽ ống trên
-        ctx.fillRect(this.x, this.bottomY, this.width, canvas.height - this.bottomY); // Vẽ ống dưới
+        ctx.fillRect(this.x, 0, this.width, this.topHeight);
+        ctx.fillRect(this.x, this.bottomY, this.width, canvas.height - this.bottomY);
     }
 
     offscreen() {
-        return this.x + this.width < 0; // Kiểm tra ống ra khỏi màn hình
+        return this.x + this.width < 0;
     }
 }
 
 // Lớp Game (Trò chơi)
 class Game {
     constructor() {
-        this.bird = new Bird();             // Khởi tạo chim
-        this.pipes = [];                    // Danh sách ống
-        this.score = 0;                     // Điểm số hiện tại
-        this.highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0; // Điểm cao nhất
-        this.gameOver = false;              // Trạng thái game
-        this.pipeInterval = 2000;           // Khoảng cách giữa các ống (2 giây)
-        this.lastPipeTime = Date.now();     // Thời điểm tạo ống cuối
+        this.bird = new Bird();
+        this.pipes = [];
+        this.score = 0;
+        this.highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0;
+        this.gameOver = false;
+        this.pipeInterval = 2000;
+        this.lastPipeTime = Date.now();
+        this.scale = canvas.width / 480;
     }
 
     start() {
-        this.addPipe();     // Thêm ống đầu tiên
-        this.setupInput();  // Thiết lập điều khiển
-        this.loop();        // Bắt đầu vòng lặp
+        this.addPipe();
+        this.setupInput();
+        this.loop();
     }
 
     setupInput() {
-        // Sự kiện chuột
         canvas.addEventListener('click', () => {
             if (!this.gameOver) {
                 this.bird.flap();
@@ -128,7 +154,6 @@ class Game {
                 this.reset();
             }
         });
-        // Sự kiện cảm ứng (điện thoại)
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             if (!this.gameOver) {
@@ -140,16 +165,15 @@ class Game {
     }
 
     addPipe() {
-        this.pipes.push(new Pipe());    // Thêm ống mới
+        this.pipes.push(new Pipe());
     }
 
     update() {
         if (this.gameOver) return;
 
-        this.bird.update();             // Cập nhật vị trí chim
-
-        this.pipes.forEach(pipe => pipe.update()); // Cập nhật vị trí ống
-        this.pipes = this.pipes.filter(pipe => !pipe.offscreen()); // Xóa ống ra khỏi màn hình
+        this.bird.update();
+        this.pipes.forEach(pipe => pipe.update());
+        this.pipes = this.pipes.filter(pipe => !pipe.offscreen());
 
         const now = Date.now();
         if (now - this.lastPipeTime > this.pipeInterval) {
@@ -157,38 +181,34 @@ class Game {
             this.lastPipeTime = now;
         }
 
-        this.checkCollisions();  // Kiểm tra va chạm
-        this.updateScore();     // Cập nhật điểm số
+        this.checkCollisions();
+        this.updateScore();
     }
 
     draw() {
-        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);    // Vẽ nền
-        this.pipes.forEach(pipe => pipe.draw());                    // Vẽ ống
-        this.bird.draw();                                           // Vẽ chim
-        ctx.drawImage(baseImg, 0, canvas.height - 1000, canvas.width, 1000); // Vẽ mặt đất
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+        this.pipes.forEach(pipe => pipe.draw());
+        this.bird.draw();
+        ctx.drawImage(baseImg, 0, canvas.height - 75 * this.scale, canvas.width, 75 * this.scale);
 
-        // Hiển thị điểm số
         ctx.fillStyle = 'white';
-        ctx.font = '36px Arial';
-        ctx.fillText(`Score: ${this.score}`, 15, 45);
-        ctx.fillText(`High Score: ${this.highScore}`, 15, 90);
+        ctx.font = `${36 * this.scale}px Arial`;
+        ctx.fillText(`Score: ${this.score}`, 15 * this.scale, 45 * this.scale);
+        ctx.fillText(`High Score: ${this.highScore}`, 15 * this.scale, 90 * this.scale);
 
-        // Hiển thị Game Over
         if (this.gameOver) {
             ctx.fillStyle = 'red';
-            ctx.font = '72px Arial';
-            ctx.fillText('Game Over', canvas.width / 2 - 180, canvas.height / 2);
+            ctx.font = `${72 * this.scale}px Arial`;
+            ctx.fillText('Game Over', canvas.width / 2 - 180 * this.scale, canvas.height / 2);
         }
     }
 
     checkCollisions() {
-        // Va chạm với mặt đất hoặc trần
-        if (this.bird.y + this.bird.height > canvas.height - 75 || this.bird.y < 0) {
+        if (this.bird.y + this.bird.height > canvas.height - 75 * this.scale || this.bird.y < 0) {
             this.endGame();
             return;
         }
 
-        // Va chạm với ống
         for (const pipe of this.pipes) {
             if (
                 this.bird.x + this.bird.width > pipe.x &&
@@ -227,6 +247,7 @@ class Game {
         this.gameOver = false;
         this.lastPipeTime = Date.now();
         this.addPipe();
+        this.scale = canvas.width / 480;
     }
 
     loop() {
@@ -236,11 +257,11 @@ class Game {
     }
 }
 
-// Khởi động game khi tài nguyên hình ảnh sẵn sàng
+// Khởi động game
 loadEssentialAssets().then(() => {
     const game = new Game();
     game.start();
-    loadAudioAssets(); // Tải âm thanh trong nền
+    loadAudioAssets();
 }).catch(error => {
     console.error('Lỗi khi tải hình ảnh:', error);
 });
