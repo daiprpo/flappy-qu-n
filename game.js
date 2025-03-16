@@ -51,8 +51,8 @@ class Bird {
         this.width = 30;        // Chiều rộng
         this.height = 30;       // Chiều cao
         this.velocity = 0;      // Vận tốc
-        this.gravity = 0.4;     // Trọng lực
-        this.lift = -8;        // Lực nâng khi vỗ cánh
+        this.gravity = 0.45;     // Trọng lực
+        this.lift = -9;        // Lực nâng khi vỗ cánh
     }
 
     flap() {
