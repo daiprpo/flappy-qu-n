@@ -509,7 +509,10 @@ class Game {
     }
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 12fa4145c9a07397f70b491268f957cac390a273
 // Khởi chạy tải tài nguyên khi trang mở
 window.onload = () => {
     console.log('Bắt đầu tải tài nguyên');
@@ -533,6 +536,7 @@ window.onload = () => {
         }
     });
 };
+<<<<<<< HEAD
 
 // Khởi động game
 loadEssentialAssets().then(() => {
@@ -543,3 +547,5 @@ loadEssentialAssets().then(() => {
     console.error('Lỗi khi tải hình ảnh:', error);
 });
 
+=======
+>>>>>>> 12fa4145c9a07397f70b491268f957cac390a273
