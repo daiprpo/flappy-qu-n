@@ -46,12 +46,6 @@ birdImgs.default.src = 'bird.png';
 birdImgs.red.src = 'bird_red.png';
 birdImgs.blue.src = 'bird_blue.png';
 
-<<<<<<< HEAD
-=======
-// Khởi tạo hình ảnh
-const birdImg = new Image();
-birdImg.src = 'bird.png';
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
 const baseImg = new Image();
 baseImg.src = 'base.png';
 const bgImg = new Image();
@@ -59,7 +53,6 @@ bgImg.src = 'background.png';
 const shieldImg = new Image();
 shieldImg.src = 'shield.png';
 
-<<<<<<< HEAD
 // Biến âm thanh
 let flapSound = null, hitSound = null, scoreSound = null, bgMusic = null, powerupSound = null;
 
@@ -154,22 +147,9 @@ function loadAllAssets(callback) {
             });
         });
     });
-=======
-// Khởi tạo âm thanh với Web Audio API
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-let flapSound, hitSound, scoreSound;
-
-// Hàm tải âm thanh
-function loadAudio(url) {
-    return fetch(url)
-        .then(response => response.arrayBuffer())
-        .then(buffer => audioContext.decodeAudioData(buffer))
-        .catch(() => null); // Bỏ qua lỗi âm thanh
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
 }
 
 function playSound(buffer) {
-<<<<<<< HEAD
     if (!buffer || !audioContext) {
         console.warn('Không thể phát âm thanh: buffer hoặc audioContext không tồn tại');
         return;
@@ -178,16 +158,12 @@ function playSound(buffer) {
         console.warn('AudioContext đang bị tạm dừng, âm thanh sẽ phát sau khi resume');
         return;
     }
-=======
-    if (!buffer) return; // Nếu âm thanh chưa tải, không phát
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
     source.connect(audioContext.destination);
     source.start(0);
 }
 
-<<<<<<< HEAD
 function playBackgroundMusic() {
     if (!bgMusic || !audioContext) {
         console.warn('Không thể phát nhạc nền: bgMusic hoặc audioContext không tồn tại');
@@ -225,22 +201,6 @@ function selectBird(skin) {
     selectionScreen.style.display = 'none';
     canvas.style.display = 'block';
     startGame(skin);
-=======
-// Tải các tài nguyên hình ảnh tối thiểu
-function loadEssentialAssets() {
-    return Promise.all([
-        new Promise(resolve => birdImg.onload = resolve),
-        new Promise(resolve => baseImg.onload = resolve),
-        new Promise(resolve => bgImg.onload = resolve)
-    ]);
-}
-
-// Tải âm thanh trong nền
-function loadAudioAssets() {
-    loadAudio('flap.mp3').then(buffer => flapSound = buffer);
-    loadAudio('hit.mp3').then(buffer => hitSound = buffer);
-    loadAudio('score.mp3').then(buffer => scoreSound = buffer);
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
 }
 
 function startGame(skin) {
@@ -266,7 +226,6 @@ function startGame(skin) {
 
 // Lớp Bird
 class Bird {
-<<<<<<< HEAD
     constructor(skin) {
         this.scale = canvas.width / 480;
         this.x = 150 * this.scale;
@@ -295,26 +254,6 @@ class Bird {
                 this.shielded = false;
             }
         }
-=======
-    constructor() {
-        this.x = 100;           // Vị trí ban đầu ngang
-        this.y = 200;           // Vị trí ban đầu dọc
-        this.width = 30;        // Chiều rộng
-        this.height = 30;       // Chiều cao
-        this.velocity = 0;      // Vận tốc
-        this.gravity = 0.45;     // Trọng lực
-        this.lift = -9;        // Lực nâng khi vỗ cánh
-    }
-
-    flap() {
-        this.velocity = this.lift;  // Đặt vận tốc khi vỗ cánh
-        playSound(flapSound);       // Phát âm thanh vỗ cánh
-    }
-
-    update() {
-        this.velocity += this.gravity;  // Áp dụng trọng lực
-        this.y += this.velocity;        // Cập nhật vị trí
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
     }
 
     draw() {
@@ -342,7 +281,6 @@ class Bird {
 
 class Pipe {
     constructor() {
-<<<<<<< HEAD
         this.scale = canvas.width / 480;
         this.x = canvas.width;
         this.width = 75 * this.scale;
@@ -351,15 +289,6 @@ class Pipe {
         this.bottomY = this.topHeight + this.gap;
         this.speed = 3 * this.scale;
         this.scored = false;
-=======
-        this.x = canvas.width;                  // Vị trí bắt đầu từ cạnh phải
-        this.width = 50;                        // Chiều rộng ống
-        this.gap = 150;                         // Khoảng cách giữa ống trên và dưới
-        this.topHeight = Math.random() * (canvas.height - this.gap - 100) + 50; // Chiều cao ống trên
-        this.bottomY = this.topHeight + this.gap; // Vị trí ống dưới
-        this.speed = 2;                         // Tốc độ di chuyển
-        this.scored = false;                    // Trạng thái ghi điểm
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
     }
 
     update() {
@@ -379,7 +308,6 @@ class Pipe {
 
 class PowerUp {
     constructor() {
-<<<<<<< HEAD
         this.scale = canvas.width / 480;
         this.x = canvas.width + Math.random() * 200 * this.scale;
         this.y = Math.random() * (canvas.height - 100 * this.scale) + 50 * this.scale;
@@ -429,25 +357,6 @@ class Game {
     }
 
     setupInput() {
-=======
-        this.bird = new Bird();             // Khởi tạo chim
-        this.pipes = [];                    // Danh sách ống
-        this.score = 0;                     // Điểm số hiện tại
-        this.highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0; // Điểm cao nhất
-        this.gameOver = false;              // Trạng thái game
-        this.pipeInterval = 1900;           // Khoảng cách giữa các ống (2 giây)
-        this.lastPipeTime = Date.now();     // Thời điểm tạo ống cuối
-    }
-
-    start() {
-        this.addPipe();     // Thêm ống đầu tiên
-        this.setupInput();  // Thiết lập điều khiển
-        this.loop();        // Bắt đầu vòng lặp
-    }
-
-    setupInput() {
-        // Sự kiện chuột
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
         canvas.addEventListener('click', () => {
             console.log('Nhấp chuột được phát hiện');
             if (!this.gameOver) {
@@ -456,10 +365,6 @@ class Game {
                 this.reset();
             }
         });
-<<<<<<< HEAD
-=======
-        // Sự kiện cảm ứng (điện thoại)
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
         canvas.addEventListener('touchstart', (e) => {
             console.log('Chạm màn hình được phát hiện');
             e.preventDefault();
@@ -483,20 +388,11 @@ class Game {
 
     update() {
         if (this.gameOver) return;
-<<<<<<< HEAD
         this.bird.update();
         this.pipes.forEach(pipe => pipe.update());
         this.powerUps.forEach(powerUp => powerUp.update());
         this.pipes = this.pipes.filter(pipe => !pipe.offscreen());
         this.powerUps = this.powerUps.filter(powerUp => !powerUp.offscreen());
-=======
-
-        this.bird.update();             // Cập nhật vị trí chim
-
-        this.pipes.forEach(pipe => pipe.update()); // Cập nhật vị trí ống
-        this.pipes = this.pipes.filter(pipe => !pipe.offscreen()); // Xóa ống ra khỏi màn hình
-
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
         const now = Date.now();
         if (now - this.lastPipeTime > this.pipeInterval) {
             this.addPipe();
@@ -508,7 +404,6 @@ class Game {
     }
 
     draw() {
-<<<<<<< HEAD
         if (bgImg && bgImg.complete && bgImg.width > 0) {
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
         } else {
@@ -529,20 +424,6 @@ class Game {
         ctx.fillText(`Score: ${this.score}`, 15 * this.scale, 45 * this.scale);
         ctx.fillText(`Streak: ${this.streak}`, 15 * this.scale, 90 * this.scale);
         ctx.fillText(`High Score: ${this.highScore}`, 15 * this.scale, 135 * this.scale);
-=======
-        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);    // Vẽ nền
-        this.pipes.forEach(pipe => pipe.draw());                    // Vẽ ống
-        this.bird.draw();                                           // Vẽ chim
-        ctx.drawImage(baseImg, 0, canvas.height - 50, canvas.width, 50); // Vẽ mặt đất
-
-        // Hiển thị điểm số
-        ctx.fillStyle = 'white';
-        ctx.font = '24px Arial';
-        ctx.fillText(`Score: ${this.score}`, 10, 30);
-        ctx.fillText(`High Score: ${this.highScore}`, 10, 60);
-
-        // Hiển thị Game Over
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
         if (this.gameOver) {
             ctx.fillStyle = 'red';
             ctx.font = `${72 * this.scale}px Arial`;
@@ -551,7 +432,6 @@ class Game {
     }
 
     checkCollisions() {
-<<<<<<< HEAD
         if (this.bird.y + this.bird.height > canvas.height - 75 * this.scale || this.bird.y < 0) {
             if (!this.bird.shielded) {
                 this.endGame();
@@ -560,22 +440,12 @@ class Game {
             }
             return;
         }
-=======
-        // Va chạm với mặt đất hoặc trần
-        if (this.bird.y + this.bird.height > canvas.height - 50 || this.bird.y < 0) {
-            this.endGame();
-            return;
-        }
-
-        // Va chạm với ống
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
         for (const pipe of this.pipes) {
             if (
                 this.bird.x + this.bird.width > pipe.x &&
                 this.bird.x < pipe.x + pipe.width &&
                 (this.bird.y < pipe.topHeight || this.bird.y + this.bird.height > pipe.bottomY)
             ) {
-<<<<<<< HEAD
                 if (!this.bird.shielded) {
                     this.endGame();
                 }
@@ -595,23 +465,13 @@ class Game {
                 break;
             }
         }
-=======
-                this.endGame();
-                break;
-            }
-        }
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
     }
 
     updateScore() {
         this.pipes.forEach(pipe => {
             if (!pipe.scored && this.bird.x > pipe.x + pipe.width) {
-<<<<<<< HEAD
                 this.streak++;
                 this.score += this.streak > 3 ? 2 : 1;
-=======
-                this.score++;
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
                 pipe.scored = true;
                 playSound(scoreSound);
             }
@@ -620,10 +480,7 @@ class Game {
 
     endGame() {
         this.gameOver = true;
-<<<<<<< HEAD
         this.streak = 0;
-=======
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
         playSound(hitSound);
         if (this.score > this.highScore) {
             this.highScore = this.score;
@@ -632,7 +489,6 @@ class Game {
     }
 
     reset() {
-<<<<<<< HEAD
         this.bird = new Bird(this.bird.skin);
         this.pipes = [];
         this.powerUps = [];
@@ -644,14 +500,6 @@ class Game {
         this.addPowerUp();
         this.scale = canvas.width / 480;
         console.log('Khởi động lại game');
-=======
-        this.bird = new Bird();
-        this.pipes = [];
-        this.score = 0;
-        this.gameOver = false;
-        this.lastPipeTime = Date.now();
-        this.addPipe();
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
     }
 
     loop() {
@@ -661,8 +509,7 @@ class Game {
     }
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 // Khởi chạy tải tài nguyên khi trang mở
 window.onload = () => {
     console.log('Bắt đầu tải tài nguyên');
@@ -686,7 +533,7 @@ window.onload = () => {
         }
     });
 };
-=======
+
 // Khởi động game
 loadEssentialAssets().then(() => {
     const game = new Game();
@@ -695,14 +542,4 @@ loadEssentialAssets().then(() => {
 }).catch(error => {
     console.error('Lỗi khi tải hình ảnh:', error);
 });
->>>>>>> 1647cba3b704d8d1fa580ac1a78e71e3db09c6ec
-=======
-// Khởi động game khi tài nguyên hình ảnh sẵn sàng
-loadEssentialAssets().then(() => {
-    const game = new Game();
-    game.start();
-    loadAudioAssets(); // Tải âm thanh trong nền
-}).catch(error => {
-    console.error('Lỗi khi tải hình ảnh:', error);
-});
->>>>>>> e012119be6f1c5b31a372f79046df7fedc6f8395
+
