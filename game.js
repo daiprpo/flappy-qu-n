@@ -1,6 +1,7 @@
 // Biến toàn cục để lưu game
 let game;
 let audioContext = null; // Khởi tạo ngay từ đầu
+
 // Khởi tạo canvas và ngữ cảnh
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -8,6 +9,7 @@ const loadingScreen = document.getElementById('loadingScreen');
 const selectionScreen = document.getElementById('selectionScreen');
 let countdownElement = null;
 
+// Khởi tạo AudioContext ngay từ đầu
 try {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     console.log('AudioContext được khởi tạo, trạng thái ban đầu:', audioContext.state);
@@ -15,11 +17,13 @@ try {
     console.error('Lỗi khởi tạo AudioContext:', err);
 }
 
+function resizeCanvas() {
     const aspectRatio = 3 / 4;
     let width = window.innerWidth;
     let height = window.innerHeight;
     if (width / height > aspectRatio) {
         height = Math.min(height, 720);
+        width = height * aspectRatio;
     } else {
         width = Math.min(width, 480);
         height = width / aspectRatio;
